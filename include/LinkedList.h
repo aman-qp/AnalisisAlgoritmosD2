@@ -9,11 +9,13 @@ public:
 };
 
 class LinkedList {
-public:
+private:
     Node* head;
+public:
     LinkedList();
     ~LinkedList();
     bool search(int data);  // Solo implementamos búsqueda
+    void insert(int data);
 };
 
 #endif

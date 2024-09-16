@@ -23,3 +23,9 @@ bool LinkedList::search(int data) {
     }
     return false;
 }
+
+void LinkedList::insert(int data) {
+    Node* newNode = new Node(data);
+    newNode->next = head;
+    head = newNode;
+}
