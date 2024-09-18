@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <cmath>
 
+//Genera un arreglo aleatorio
 std::vector<int> generateRandomArray(int size) {
     std::vector<int> arr(size);
     std::random_device rd;
@@ -20,6 +21,7 @@ std::vector<int> generateRandomArray(int size) {
     return arr;
 }
 
+//Genera el peor caso
 std::vector<int> generateWorstCase(int size) {
     std::vector<int> arr(size);
     for (int i = 0; i < size; ++i) {
@@ -28,6 +30,7 @@ std::vector<int> generateWorstCase(int size) {
     return arr;
 }
 
+//Genera el mejor caso
 std::vector<int> generateBestCase(int size) {
     std::vector<int> arr(size);
     for (int i = 0; i < size; ++i) {
@@ -36,20 +39,21 @@ std::vector<int> generateBestCase(int size) {
     return arr;
 }
 
+//Clacular el valor teorico segun la estructura/algoritmo
 std::vector<double> calculateTheoreticalValues(const std::vector<int>& sizes, const std::string& algorithm) {
     std::vector<double> theoreticalValues;
     double scaleFactor;
 
     if (algorithm == "BubbleSort") {
-        scaleFactor =  1e-7;
+        scaleFactor =  0.00000001;
     } else if (algorithm == "SelectionSort") {
-        scaleFactor = 1e-7;
+        scaleFactor = 0.000000001;
     } else if (algorithm == "MergeSort") {
-        scaleFactor = 1e-6;
+        scaleFactor = 0.00000001;
     } else if (algorithm == "LinkedList") {
-        scaleFactor = 1e-7;
+        scaleFactor = 0.000000001;
     } else if (algorithm == "ArbolBinario") {
-        scaleFactor = 1e-6;
+        scaleFactor = 0.00000000001;
     }
 
     for (int n : sizes) {
@@ -68,6 +72,7 @@ std::vector<double> calculateTheoreticalValues(const std::vector<int>& sizes, co
     return theoreticalValues;
 }
 
+//Funcion que mide el tiempo
 template<typename Func>
 double measureTime(Func func) {
     auto start = std::chrono::high_resolution_clock::now();

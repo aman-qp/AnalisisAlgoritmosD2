@@ -11,7 +11,7 @@
 // Función para obtener tamaños específicos para cada algoritmo
 std::vector<int> getSizes(const std::string& algorithm) {
     if (algorithm == "BubbleSort" || algorithm == "SelectionSort") {
-        return {100, 500, 1000, 1500, 2000, 2500, 3000};
+        return {100, 500, 1000, 1500, 2000, 2500, 3000,4000,5000};
     } else if (algorithm == "MergeSort") {
         return {1000, 5000, 10000, 50000, 100000, 500000, 1000000};
     } else if (algorithm == "LinkedList" || algorithm == "ArbolBinario") {
@@ -108,6 +108,7 @@ int main(int argc, char *argv[]) {
         std::vector<double> bestTimes, worstTimes, avgTimes, theoreticalTimes;
         std::string algorithmName;
 
+        //Menu para seleecionar la estructura/algoritmo deseada
         switch (choice) {
             case 1:
                 algorithmName = "BubbleSort";
@@ -131,9 +132,10 @@ int main(int argc, char *argv[]) {
                 std::cout << "Opción inválida. Por favor, selecciona una opción válida." << std::endl;
             continue;
         }
-
+        //Asiga el tamaño dependiendo del algoritmo
         std::vector<int> sizes = getSizes(algorithmName);
 
+        //Lo que se debe mostrar para cada algoritmo
         if (algorithmName == "BubbleSort") {
             runBubbleSortTests(sizes, bestTimes, worstTimes, avgTimes);
         } else if (algorithmName == "SelectionSort") {
