@@ -4,7 +4,7 @@
 ArbolBinario::ArbolBinario() : root(nullptr) {}
 
 ArbolBinario::~ArbolBinario() {
-    // Aquí podrías implementar un destructor recursivo para eliminar todos los nodos del árbol si fuera necesario.
+
 }
 
 TreeNode* ArbolBinario::insert(TreeNode* node, int data) {

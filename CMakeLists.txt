@@ -8,13 +8,13 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
-# Incluir directorios de cabeceras
+# Incluir directorios .h
 include_directories(include)
 
-# Encontrar paquetes de Qt5
+# Paquetes de Qt5
 find_package(Qt5 COMPONENTS Widgets Charts REQUIRED)
 
-# Definir el ejecutable con los archivos fuente
+# El ejecutable con los archivos fuente
 add_executable(AnalisisAlgoritmos
         main.cpp
         "Algoritmos y Estructuras/BubbleSort.cpp"

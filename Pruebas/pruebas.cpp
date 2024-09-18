@@ -38,23 +38,31 @@ std::vector<int> generateBestCase(int size) {
 
 std::vector<double> calculateTheoreticalValues(const std::vector<int>& sizes, const std::string& algorithm) {
     std::vector<double> theoreticalValues;
-    double scaleFactor = 0.0001;
-    for (int n : sizes) {
-        double value;
-        if (algorithm == "BubbleSort" || algorithm == "SelectionSort") {
-            value = n * n;  // O(n^2)
-        } else if (algorithm == "MergeSort") {
-            value = n * log2(n);  // O(n log n)
-        } else if (algorithm == "LinkedList") {
-            value = n;  // O(n)
-        } else if (algorithm == "ArbolBinario") {
-            value = log2(n);  // O(log n)
-        } else {
-            value = 0;  // Valor por defecto si el algoritmo no está reconocido
-        }
-        // Aplica el factor de ajuste para que sea comparable con los resultados empíricos
-        value *= scaleFactor;
+    double scaleFactor;
 
+    if (algorithm == "BubbleSort") {
+        scaleFactor =  1e-7;
+    } else if (algorithm == "SelectionSort") {
+        scaleFactor = 1e-7;
+    } else if (algorithm == "MergeSort") {
+        scaleFactor = 1e-6;
+    } else if (algorithm == "LinkedList") {
+        scaleFactor = 1e-7;
+    } else if (algorithm == "ArbolBinario") {
+        scaleFactor = 1e-6;
+    }
+
+    for (int n : sizes) {
+        double value = 0.0;
+        if (algorithm == "BubbleSort" || algorithm == "SelectionSort") {
+            value = n * n * scaleFactor;
+        } else if (algorithm == "MergeSort") {
+            value = n * std::log2(n) * scaleFactor;
+        } else if (algorithm == "LinkedList") {
+            value = n * scaleFactor;
+        } else if (algorithm == "ArbolBinario") {
+            value = std::log2(n) * scaleFactor;
+        }
         theoreticalValues.push_back(value);
     }
     return theoreticalValues;

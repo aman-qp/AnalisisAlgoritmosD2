@@ -6,38 +6,65 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <QValueAxis>
+
+// Función para obtener tamaños específicos para cada algoritmo
+std::vector<int> getSizes(const std::string& algorithm) {
+    if (algorithm == "BubbleSort" || algorithm == "SelectionSort") {
+        return {100, 500, 1000, 1500, 2000, 2500, 3000};
+    } else if (algorithm == "MergeSort") {
+        return {1000, 5000, 10000, 50000, 100000, 500000, 1000000};
+    } else if (algorithm == "LinkedList" || algorithm == "ArbolBinario") {
+        return {100, 1000, 10000, 100000, 1000000};
+    }
+    return {100, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000};
+}
 
 // Función para mostrar una gráfica con múltiples series
 void showGraph(const std::vector<int>& sizes,
-                const std::vector<double>& bestTimes,
-                const std::vector<double>& worstTimes,
-                const std::vector<double>& avgTimes,
-                const std::string& title) {
+               const std::vector<double>& bestTimes,
+               const std::vector<double>& worstTimes,
+               const std::vector<double>& avgTimes,
+               const std::vector<double>& theoreticalTimes,
+               const std::string& title) {
     QtCharts::QLineSeries *bestSeries = new QtCharts::QLineSeries();
     QtCharts::QLineSeries *worstSeries = new QtCharts::QLineSeries();
     QtCharts::QLineSeries *avgSeries = new QtCharts::QLineSeries();
+    QtCharts::QLineSeries *theoreticalSeries = new QtCharts::QLineSeries();
+
+    // Encontrar el valor máximo para normalizar
+    double maxTime = 0;
+    for (size_t i = 0; i < sizes.size(); ++i) {
+        maxTime = std::max({maxTime, bestTimes[i], worstTimes[i], avgTimes[i], theoreticalTimes[i]});
+    }
+
+    // Factor de multiplicación para ajustar la escala
+    double scaleFactor = 1.0 / maxTime;
 
     for (size_t i = 0; i < sizes.size(); ++i) {
-        bestSeries->append(sizes[i], bestTimes[i]);
-        worstSeries->append(sizes[i], worstTimes[i]);
-        avgSeries->append(sizes[i], avgTimes[i]);
+        bestSeries->append(sizes[i], bestTimes[i] * scaleFactor);
+        worstSeries->append(sizes[i], worstTimes[i] * scaleFactor);
+        avgSeries->append(sizes[i], avgTimes[i] * scaleFactor);
+        theoreticalSeries->append(sizes[i], theoreticalTimes[i] * scaleFactor);
     }
 
     QtCharts::QChart *chart = new QtCharts::QChart();
     chart->addSeries(bestSeries);
     chart->addSeries(worstSeries);
     chart->addSeries(avgSeries);
+    chart->addSeries(theoreticalSeries);
 
-    // Configuración de ejes y leyenda
+    // Configuración de ejes y titulo
     chart->createDefaultAxes();
     chart->axes(Qt::Horizontal).first()->setTitleText("Tamaño del problema");
     chart->axes(Qt::Vertical).first()->setTitleText("Tiempo de ejecución");
     chart->setTitle(QString::fromStdString(title));
 
-    // Configuración de la leyenda
+    // Configuración de los titulos
     bestSeries->setName("Mejor Caso");
     worstSeries->setName("Peor Caso");
     avgSeries->setName("Caso Promedio");
+    theoreticalSeries->setName("Valor Teórico");
 
     QtCharts::QChartView *chartView = new QtCharts::QChartView(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
@@ -73,45 +100,57 @@ int showMenuAndGetSelection() {
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
 
-    std::vector<int> sizes = {100, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500, 6000, 6500, 7000, 7500, 8000};
-
-
     int choice;
     do {
         choice = showMenuAndGetSelection();
 
         // Variables para almacenar los tiempos de ejecución
-        std::vector<double> bestTimes, worstTimes, avgTimes;
+        std::vector<double> bestTimes, worstTimes, avgTimes, theoreticalTimes;
+        std::string algorithmName;
 
         switch (choice) {
             case 1:
-                runBubbleSortTests(sizes, bestTimes, worstTimes, avgTimes);
-                showGraph(sizes, bestTimes, worstTimes, avgTimes, "BubbleSort");
-                break;
+                algorithmName = "BubbleSort";
+            break;
             case 2:
-                runSelectionSortTests(sizes, bestTimes, worstTimes, avgTimes);
-                showGraph(sizes, bestTimes, worstTimes, avgTimes, "SelectionSort");
-                break;
+                algorithmName = "SelectionSort";
+            break;
             case 3:
-                runMergeSortTests(sizes, bestTimes, worstTimes, avgTimes);
-                showGraph(sizes, bestTimes, worstTimes, avgTimes, "MergeSort");
-                break;
+                algorithmName = "MergeSort";
+            break;
             case 4:
-                runLinkedListTests(sizes, bestTimes, worstTimes, avgTimes);
-                showGraph(sizes, bestTimes, worstTimes, avgTimes, "LinkedList");
-                break;
+                algorithmName = "LinkedList";
+            break;
             case 5:
-                runArbolBinarioTests(sizes, bestTimes, worstTimes, avgTimes);
-                showGraph(sizes, bestTimes, worstTimes, avgTimes, "ArbolBinario");
-                break;
+                algorithmName = "ArbolBinario";
+            break;
             case 0:
                 std::cout << "Saliendo..." << std::endl;
-                return 0;
+            return 0;
             default:
                 std::cout << "Opción inválida. Por favor, selecciona una opción válida." << std::endl;
-                break;
+            continue;
         }
+
+        std::vector<int> sizes = getSizes(algorithmName);
+
+        if (algorithmName == "BubbleSort") {
+            runBubbleSortTests(sizes, bestTimes, worstTimes, avgTimes);
+        } else if (algorithmName == "SelectionSort") {
+            runSelectionSortTests(sizes, bestTimes, worstTimes, avgTimes);
+        } else if (algorithmName == "MergeSort") {
+            runMergeSortTests(sizes, bestTimes, worstTimes, avgTimes);
+        } else if (algorithmName == "LinkedList") {
+            runLinkedListTests(sizes, bestTimes, worstTimes, avgTimes);
+        } else if (algorithmName == "ArbolBinario") {
+            runArbolBinarioTests(sizes, bestTimes, worstTimes, avgTimes);
+        }
+
+        theoreticalTimes = calculateTheoreticalValues(sizes, algorithmName);
+        showGraph(sizes, bestTimes, worstTimes, avgTimes, theoreticalTimes, algorithmName);
+
     } while (choice != 0);
 
     return a.exec();
 }
+
